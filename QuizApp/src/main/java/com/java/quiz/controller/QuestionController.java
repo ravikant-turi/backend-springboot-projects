@@ -19,16 +19,16 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
 
-//    @GetMapping
-//    public ResponseEntity<ApiResponse<PagedResponse<GetQuestionResponseDto>>> findAllQuestion(
-//            HttpServletRequest httpServletRequest
-//    ,@RequestParam (defaultValue = "10")int size , @RequestParam (defaultValue = "0") int page) {
-//       ApiResponse<PagedResponse<GetQuestionResponseDto>> listApiResponse =
-//                this.questionService.findAll(size,page);
-//        listApiResponse.setPath(httpServletRequest.getRequestURI());
-//        return ResponseEntity.status(HttpStatus.OK).body(listApiResponse);
-//    }
-//
+    @GetMapping
+    public ResponseEntity<ApiResponse<PagedResponse<GetQuestionResponseDto>>> findAllQuestion(
+            HttpServletRequest httpServletRequest
+    ,@RequestParam (defaultValue = "10")int size , @RequestParam (defaultValue = "0") int page) {
+       ApiResponse<PagedResponse<GetQuestionResponseDto>> listApiResponse =
+                this.questionService.findAll(size,page);
+        listApiResponse.setPath(httpServletRequest.getRequestURI());
+        return ResponseEntity.status(HttpStatus.OK).body(listApiResponse);
+    }
+
     @GetMapping("{id}")
     ResponseEntity<ApiResponse<GetQuestionResponseDto>> findQuestionById(@PathVariable Long id,
                                                                          HttpServletRequest httpServletRequest) {
