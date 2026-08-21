@@ -60,18 +60,17 @@ public class QuestionController {
 
     }
 
-//    @PutMapping
-//    public ResponseEntity<ApiResponse<UpdateQuestionResponseDto>> updateQuestion(
-//            @Valid @RequestBody UpdateQuestionRequestDto updateQuestionRequestDto ,HttpServletRequest httpServletRequest
-//    ) {
-//
-//        ApiResponse<UpdateQuestionResponseDto> response =
-//                this.questionService.updateQuestionById(updateQuestionRequestDto);
-//
-//        response.setPath(httpServletRequest.getRequestURI());
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(response);
-//    }
-//
-//
+    @PutMapping
+    public ResponseEntity<ApiResponse<UpdateQuestionResponseDto>> updateQuestion(
+            @Valid @RequestBody UpdateQuestionRequestDto updateQuestionRequestDto ,HttpServletRequest httpServletRequest
+    ) {
+
+        ApiResponse<UpdateQuestionResponseDto> response =
+                this.questionService.updateQuestionById(updateQuestionRequestDto);
+
+        response.setPath(httpServletRequest.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 }
