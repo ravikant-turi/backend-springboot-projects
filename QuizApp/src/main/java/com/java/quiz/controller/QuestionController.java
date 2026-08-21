@@ -29,18 +29,18 @@ public class QuestionController {
 //        return ResponseEntity.status(HttpStatus.OK).body(listApiResponse);
 //    }
 //
-//    @GetMapping("{id}")
-//    ResponseEntity<ApiResponse<GetQuestionResponseDto>> findQuestionById(@PathVariable Long id,
-//                                                                         HttpServletRequest httpServletRequest) {
-//
-//        ApiResponse<GetQuestionResponseDto> questionApiResponse = this.questionService.findQuestionById(id);
-//        questionApiResponse.setPath(httpServletRequest.getRequestURI());
-//
-//        this.questionService.findAll(10,0);
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(questionApiResponse);
-//
-//    }
+    @GetMapping("{id}")
+    ResponseEntity<ApiResponse<GetQuestionResponseDto>> findQuestionById(@PathVariable Long id,
+                                                                         HttpServletRequest httpServletRequest) {
+
+        ApiResponse<GetQuestionResponseDto> questionApiResponse = this.questionService.findQuestionById(id);
+        questionApiResponse.setPath(httpServletRequest.getRequestURI());
+
+        this.questionService.findAll(10,0);
+
+        return ResponseEntity.status(HttpStatus.OK).body(questionApiResponse);
+
+    }
 //
 //    @DeleteMapping("{id}")
 //    ResponseEntity<ApiResponse<Void>> deleteQuestionById(@PathVariable Long id) {
