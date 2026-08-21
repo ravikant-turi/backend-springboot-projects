@@ -41,13 +41,13 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.OK).body(questionApiResponse);
 
     }
-//
-//    @DeleteMapping("{id}")
-//    ResponseEntity<ApiResponse<Void>> deleteQuestionById(@PathVariable Long id) {
-//        ApiResponse<Void> response = this.questionService.deleteQuestionById(id);
-//        return ResponseEntity.status(HttpStatus.OK).body(response);
-//
-//    }
+
+    @DeleteMapping("{id}")
+    ResponseEntity<ApiResponse<Void>> deleteQuestionById(@PathVariable Long id) {
+        ApiResponse<Void> response = this.questionService.deleteQuestionById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+    }
 //
 //    @PostMapping
 //    public ResponseEntity<ApiResponse<CreateQuestionResponseDto>> createQuestion(
