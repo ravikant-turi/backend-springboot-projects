@@ -48,18 +48,18 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
-//
-//    @PostMapping
-//    public ResponseEntity<ApiResponse<CreateQuestionResponseDto>> createQuestion(
-//            @Valid @RequestBody CreateQuestionRequestDto requestDto,
-//            HttpServletRequest request) {
-//        ApiResponse<CreateQuestionResponseDto> response =
-//                questionService.createQuestion(requestDto);
-//        response.setPath(request.getRequestURI());
-//        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-//
-//    }
-//
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<CreateQuestionResponseDto>> createQuestion(
+            @Valid @RequestBody CreateQuestionRequestDto requestDto,
+            HttpServletRequest request) {
+        ApiResponse<CreateQuestionResponseDto> response =
+                questionService.createQuestion(requestDto);
+        response.setPath(request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+    }
+
 //    @PutMapping
 //    public ResponseEntity<ApiResponse<UpdateQuestionResponseDto>> updateQuestion(
 //            @Valid @RequestBody UpdateQuestionRequestDto updateQuestionRequestDto ,HttpServletRequest httpServletRequest
