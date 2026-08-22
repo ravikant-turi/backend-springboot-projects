@@ -13,6 +13,12 @@ public class QuizQuestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long quizId;
 
+    @ManyToMany
+    @JoinTable(
+            name = "quiz_question",
+            joinColumns = @JoinColumn(name = "quiz_id"),
+            inverseJoinColumns = @JoinColumn(name = "question_id")
+    )
     private List<Question> questionList;
 
     private String QuizName;

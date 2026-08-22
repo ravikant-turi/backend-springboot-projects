@@ -14,7 +14,7 @@ public interface QuizService {
 //├── addQuestionsToQuiz()
 //└── removeQuestionFromQuiz()
 
-   List<Question> CreateQuiz();
+   List<Question> CreateQuiz(int totalQuestion);
     List<Question> CreateQuizByTopic(String topic);
     List<Question> CreateQuizByDifficulty(String difficulty);
 
