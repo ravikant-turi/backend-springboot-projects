@@ -1,5 +1,6 @@
 package com.java.quiz.exception;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 
 @RestControllerAdvice
@@ -75,6 +77,29 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(response);
     }
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiResponse<Map<String, Object>>>
+    handleNoResourceFoundException(
+            NoResourceFoundException ex,
+            HttpServletRequest request) {
 
+        Map<String, Object> errors = new HashMap<>();
+
+        errors.put("status", HttpStatus.NOT_FOUND.value());
+        errors.put("message", "The requested API endpoint was not found");
+        errors.put("path", request.getRequestURI());
+        errors.put("timestamp", LocalDateTime.now());
+
+        ApiResponse<Map<String, Object>> response =
+                new ApiResponse<>(
+                        "FAILED",
+                        "RESOURCE_NOT_FOUND",
+                        errors
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
+    }
 
 }
