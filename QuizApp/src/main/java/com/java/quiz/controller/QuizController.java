@@ -1,6 +1,8 @@
 package com.java.quiz.controller;
 
 import com.java.quiz.dto.QuizAttemptRequestDto;
+import com.java.quiz.dto.QuizAttemptResponseDto;
+import com.java.quiz.model.AnswerResult;
 import com.java.quiz.model.Question;
 import com.java.quiz.payloads.ApiResponse;
 import com.java.quiz.service.QuizService;
@@ -37,9 +39,9 @@ public class QuizController {
     }
 
     @PostMapping("/attempt")
-    ResponseEntity<Integer> attemptQuiz(@RequestBody QuizAttemptRequestDto quizAttemptRequestDto){
+    ResponseEntity<ApiResponse<QuizAttemptResponseDto<AnswerResult>>> attemptQuiz(@RequestBody QuizAttemptRequestDto quizAttemptRequestDto){
 
-        int ans=this.quizService.attemptQuizAndReturnAns(quizAttemptRequestDto);
+        ApiResponse<QuizAttemptResponseDto<AnswerResult>> ans=this.quizService.attemptQuizAndReturnAns(quizAttemptRequestDto);
 
         System.out.println("==========we are in the controller");
 

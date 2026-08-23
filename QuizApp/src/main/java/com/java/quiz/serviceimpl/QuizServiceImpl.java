@@ -2,7 +2,9 @@ package com.java.quiz.serviceimpl;
 
 import com.java.quiz.QuizAppApplication;
 import com.java.quiz.dto.QuizAttemptRequestDto;
+import com.java.quiz.dto.QuizAttemptResponseDto;
 import com.java.quiz.exception.ResourceNotFoundException;
+import com.java.quiz.model.AnswerResult;
 import com.java.quiz.model.Question;
 import com.java.quiz.model.Quiz;
 import com.java.quiz.model.SubmittedAnswer;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -67,10 +70,20 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public int attemptQuizAndReturnAns(QuizAttemptRequestDto quizAttemptRequestDto) {
+    public  ApiResponse<QuizAttemptResponseDto<AnswerResult>> attemptQuizAndReturnAns(
+            QuizAttemptRequestDto quizAttemptRequestDto) {
         System.out.println("=======We are in the service ");
-        int score = 0;
-        for (SubmittedAnswer submittedAnswer : quizAttemptRequestDto.getSubmittedAnswerList()) {
+        long score = 0;
+         QuizAttemptResponseDto <AnswerResult> responseDto=new QuizAttemptResponseDto();
+
+
+
+         List<AnswerResult> answerResultList=new ArrayList<>();
+
+        for (SubmittedAnswer submittedAnswer :
+                quizAttemptRequestDto.getSubmittedAnswerList()) {
+
+            AnswerResult answerResult=new AnswerResult();
 
             Question question = this.questionRepository.findById(submittedAnswer.getQuestionId()).orElseThrow(() -> new ResourceNotFoundException("Question does not exist"));
 
@@ -79,10 +92,29 @@ public class QuizServiceImpl implements QuizService {
 
             if (submittedAnswer.getSubAns().equalsIgnoreCase(question.getCorrectAns())) {
                 score++;
+                answerResult.setCorrected(true);
             }
+            answerResult.setCorrectAns(submittedAnswer.getSubAns());
+            answerResult.setQuestionId(submittedAnswer.getQuestionId());
+            answerResult.setQuestionName(question.getCategory());
+            answerResult.setQuestionId(question.getQuestionId());
+            answerResult.setSubmittedAns(submittedAnswer.getSubAns());
+            answerResultList.add(answerResult);
+
         }
 
+
+          String   quizName=this.quizRepository.findById(quizAttemptRequestDto.getQuizId())
+                    .orElseThrow(()-> new ResourceNotFoundException("Quiz is not found with quiz id ")).getQuizName();
+        responseDto.setQuizName(quizName);
+        responseDto.setAnswerResults(answerResultList);
+        responseDto.setScore(score);
+        responseDto.setTotalQuestion((long) answerResultList.size()) ;
+
         System.out.println("==================== "+score);
-        return score;
+
+
+     return new ApiResponse<>("Success","DATA_FOUND",responseDto);
+
     }
 }
