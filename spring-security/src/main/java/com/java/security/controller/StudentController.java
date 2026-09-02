@@ -3,9 +3,7 @@ package com.java.security.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -15,6 +13,20 @@ public class StudentController {
     @GetMapping
     public ResponseEntity<String> getAllStudent() {
         String str = "get all student ";
+
+        return ResponseEntity.status(HttpStatus.OK).body(str);
+    }
+
+    @PostMapping
+    public ResponseEntity<String> createStudent() {
+        String str = "create all student ";
+
+        return ResponseEntity.status(HttpStatus.OK).body(str);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<String> deleteStudent() {
+        String str = "delete all student ";
 
         return ResponseEntity.status(HttpStatus.OK).body(str);
     }
@@ -38,8 +50,9 @@ public class StudentController {
 
         return principal.getName();
     }
+
     @GetMapping("hello")
-    public String helloWorld(){
+    public String helloWorld() {
         return "Hello security";
     }
 }
