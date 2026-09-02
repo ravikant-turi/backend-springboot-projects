@@ -38,4 +38,8 @@ public class StudentController {
 
         return principal.getName();
     }
+    @GetMapping("hello")
+    public String helloWorld(){
+        return "Hello security";
+    }
 }
