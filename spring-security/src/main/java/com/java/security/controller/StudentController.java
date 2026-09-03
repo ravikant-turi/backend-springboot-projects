@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/auth")
+//@RequestMapping("api/auth")
 public class StudentController {
 	@GetMapping
 	public ResponseEntity<String> getAllStudent() {
@@ -21,12 +21,12 @@ public class StudentController {
 		return ResponseEntity.status(HttpStatus.OK).body(str);
 	}
 
-	@PostMapping
-	public ResponseEntity<String> createStudent() {
-		String str = "create all student ";
-
-		return ResponseEntity.status(HttpStatus.OK).body(str);
-	}
+//	@PostMapping
+//	public ResponseEntity<String> createStudent() {
+//		String str = "create all student ";
+//
+//		return ResponseEntity.status(HttpStatus.OK).body(str);
+//	}
 
 	@DeleteMapping
 	public ResponseEntity<String> deleteStudent() {
