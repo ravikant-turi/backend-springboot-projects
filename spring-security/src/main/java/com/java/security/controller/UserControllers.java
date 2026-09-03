@@ -3,10 +3,8 @@ package com.java.security.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.web.bind.annotation.*;
 
 import com.java.security.dto.UserRegisterRequestDto;
 import com.java.security.dto.UserRegisterResponseDto;
@@ -16,20 +14,29 @@ import com.java.security.service.AuthService;
 @RequestMapping("api/auth")
 public class UserControllers {
 
-	private AuthService authService;
+	private final AuthService authService;
 
 	public UserControllers(AuthService authService) {
 
 		this.authService = authService;
 	}
 
-	@PostMapping
+	@PostMapping("/register")
 	ResponseEntity<UserRegisterResponseDto> register(@RequestBody UserRegisterRequestDto userRegisterRequestDto) {
-
+		System.out.println("===================we are in the controller");
 		UserRegisterResponseDto response = this.authService.registerUser(userRegisterRequestDto);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
 	}
+	@GetMapping
+	public ResponseEntity<String>  hello(){
+		return ResponseEntity.status(HttpStatus.OK).body("Hello world");
+	}
+	@GetMapping("/token")
+	public CsrfToken getCSRF(CsrfToken csrfToken){
+		return csrfToken;
+	}
+
 
 }

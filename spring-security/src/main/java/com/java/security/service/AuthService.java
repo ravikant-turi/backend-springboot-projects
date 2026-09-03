@@ -37,8 +37,9 @@ public class AuthService {
 		toBeRegister.setPassword(encodedPassword);
 		toBeRegister.setEnabled(true);
 		User savedUser = this.userRepository.save(toBeRegister);
+		UserRegisterResponseDto registerResponseDto=new UserRegisterResponseDto(savedUser.getUsername(),"DATA_SAVED");
 
-		return modelMapper.map(savedUser, UserRegisterResponseDto.class);
+		return registerResponseDto;
 	}
 
 }
