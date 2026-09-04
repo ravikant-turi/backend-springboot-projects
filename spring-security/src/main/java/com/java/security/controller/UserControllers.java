@@ -37,6 +37,14 @@ public class UserControllers {
 	public CsrfToken getCSRF(CsrfToken csrfToken){
 		return csrfToken;
 	}
+	
+	@PostMapping("/login")
+    public ResponseEntity<Boolean> login(
+            @RequestBody UserRegisterRequestDto registerRequestDto) {
+        Boolean loggedIn = authService.login(registerRequestDto);
+
+        return ResponseEntity.ok(loggedIn);
+    }
 
 
 }

@@ -1,7 +1,8 @@
 package com.java.security.service;
 
+import java.util.Optional;
+
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,7 @@ public class AuthService {
 
 	private ModelMapper modelMapper;
 
-	
-	private PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	public AuthService(UserRepository userRepository, RoleRepository roleRepository, ModelMapper modelMapper) {
 		this.userRepository = userRepository;
@@ -37,9 +37,20 @@ public class AuthService {
 		toBeRegister.setPassword(encodedPassword);
 		toBeRegister.setEnabled(true);
 		User savedUser = this.userRepository.save(toBeRegister);
-		UserRegisterResponseDto registerResponseDto=new UserRegisterResponseDto(savedUser.getUsername(),"DATA_SAVED");
+		UserRegisterResponseDto registerResponseDto = new UserRegisterResponseDto(savedUser.getUsername(),
+				"DATA_SAVED");
 
 		return registerResponseDto;
+	}
+
+	public Boolean login(UserRegisterRequestDto registerRequestDto) {
+		Optional<User> userOptional = userRepository.findByUsername(registerRequestDto.getUsername());
+
+		User user = userOptional.get();
+
+		String encodedPassword = user.getPassword();
+
+		return passwordEncoder.matches(registerRequestDto.getPassword(), encodedPassword);
 	}
 
 }
