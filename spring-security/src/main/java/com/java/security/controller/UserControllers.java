@@ -23,7 +23,7 @@ public class UserControllers {
 
 	@PostMapping("/register")
 	ResponseEntity<UserRegisterResponseDto> register(@RequestBody UserRegisterRequestDto userRegisterRequestDto) {
-		System.out.println("===================we are in the controller");
+		System.out.println("===================we are in the controller============");
 		UserRegisterResponseDto response = this.authService.registerUser(userRegisterRequestDto);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
