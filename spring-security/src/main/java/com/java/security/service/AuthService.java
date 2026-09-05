@@ -2,6 +2,7 @@ package com.java.security.service;
 
 import java.util.Optional;
 
+import com.java.security.model.Role;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,8 +35,15 @@ public class AuthService {
 		String encodedPassword = this.passwordEncoder.encode(userRegisterRequestDto.getPassword());
 		User toBeRegister = this.modelMapper.map(userRegisterRequestDto, User.class);
 
+
+		Role role=this.roleRepository.findByName(userRegisterRequestDto.getUsername()).get();
+
 		toBeRegister.setPassword(encodedPassword);
 		toBeRegister.setEnabled(true);
+
+
+
+		toBeRegister.setRole();
 		User savedUser = this.userRepository.save(toBeRegister);
 		UserRegisterResponseDto registerResponseDto = new UserRegisterResponseDto(savedUser.getUsername(),
 				"DATA_SAVED");
