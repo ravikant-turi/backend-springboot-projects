@@ -24,125 +24,137 @@ import java.util.Base64;
 @Configuration
 public class SecurityConfig {
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	// Creates BCrypt password encoder.
+	// Used to hash passwords during registration
+	// and verify passwords during login.
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider(
-            CustomUserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder
-    ) {
-        DaoAuthenticationProvider provider =
-                new DaoAuthenticationProvider(userDetailsService);
+	// Creates DaoAuthenticationProvider.
+	// Responsibilities:
+	// - Load user from database using CustomUserDetailsService
+	// - Verify password using PasswordEncoder
+	// - Create authenticated Authentication object
+	// Used during login authentication.
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider(CustomUserDetailsService userDetailsService,
+			PasswordEncoder passwordEncoder) {
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
 
-        provider.setPasswordEncoder(passwordEncoder);
+		provider.setPasswordEncoder(passwordEncoder);
 
-        return provider;
-    }
+		return provider;
+	}
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            DaoAuthenticationProvider authenticationProvider) {
+	// Creates AuthenticationManager.
+	// Responsibilities:
+	// - Receive authentication requests
+	// - Delegate authentication to AuthenticationProvider
+	// Flow:
+	// AuthenticationManager -> DaoAuthenticationProvider
+	@Bean
+	public AuthenticationManager authenticationManager(DaoAuthenticationProvider authenticationProvider) {
 
-        return new ProviderManager(authenticationProvider);
-    }
+		return new ProviderManager(authenticationProvider);
+	}
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity httpSecurity,
-            JwtAuthenticationConverter jwtAuthenticationConverter) {
+	// Builds and configures the Spring Security Filter Chain.
 
-        httpSecurity.csrf(csrf -> csrf.disable())
+	// Configures:
 
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/users/register"
-                                ).permitAll()
-                                .requestMatchers("/api/auths/login").permitAll()
+	// - CSRF protection
 
-                                .anyRequest().authenticated()
-                )
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS
-                        )
-                )
-                .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(jwt ->
-                                jwt.jwtAuthenticationConverter(
-                                        jwtAuthenticationConverter
-                                )
-                        )
-                );
+	// - Authorization rules
 
-        return httpSecurity.build();
-    }
+	// - Session management
 
-    @Bean
-    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+	// - JWT authentication
+	// This is the main Spring Security configuration.
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
+			JwtAuthenticationConverter jwtAuthenticationConverter) {
 
-        JwtGrantedAuthoritiesConverter authoritiesConverter =
-                new JwtGrantedAuthoritiesConverter();
+		httpSecurity.csrf(csrf -> csrf.disable())
 
-        authoritiesConverter.setAuthoritiesClaimName(
-                "authorities"
-        );
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/users/register").permitAll()
+						.requestMatchers("/api/auths/login").permitAll()
 
-        authoritiesConverter.setAuthorityPrefix("");
+						.anyRequest().authenticated())
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.oauth2ResourceServer(
+						oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
 
-        JwtAuthenticationConverter
-                authenticationConverter =
-                new JwtAuthenticationConverter();
+		return httpSecurity.build();
+	}
 
-        authenticationConverter
-                .setJwtGrantedAuthoritiesConverter(
-                        authoritiesConverter
-                );
+	// Creates JwtAuthenticationConverter.
+	// Responsibilities:
+	// - Extract authorities from JWT claims
+	// - Convert JWT claims into GrantedAuthority objects
+	// - Populate Authentication object with roles/authorities
+	// Example:
+	// "authorities":["ADMIN","USER"]
 
-        return authenticationConverter;
-    }
+	@Bean
+	public JwtAuthenticationConverter jwtAuthenticationConverter() {
 
-    @Bean
-    public SecretKey jwtSecretKey(
-            @Value("${jwt.secret}") String secret) {
+		JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
 
-        byte[] decodedKey =
-                Base64.getDecoder().decode(secret);
+		authoritiesConverter.setAuthoritiesClaimName("authorities");
 
-        return new SecretKeySpec(
-                decodedKey,
-                "HmacSHA256"
-        );
-    }
+		authoritiesConverter.setAuthorityPrefix("");
 
-    @Bean
-    public JwtEncoder jwtEncoder(
-            SecretKey secretKey) {
+		JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
 
-        return NimbusJwtEncoder
-                .withSecretKey(secretKey)
-                .algorithm(MacAlgorithm.HS256)
-                .build();
-    }
+		authenticationConverter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
 
-    @Bean
-    public JwtDecoder jwtDecoder(
-            SecretKey secretKey,
-            @Value("${jwt.issuer}") String issuer) {
+		return authenticationConverter;
+	}
 
-        NimbusJwtDecoder decoder =
-                NimbusJwtDecoder
-                        .withSecretKey(secretKey)
-                        .macAlgorithm(MacAlgorithm.HS256)
-                        .build();
+	// Creates SecretKey from Base64 encoded secret.
+	// Responsibilities:
+	// - Provide signing key for JWT generation
+	// - Provide validation key for JWT verification
+	// Used by JwtEncoder and JwtDecoder.
 
-        decoder.setJwtValidator(
-                JwtValidators.createDefaultWithIssuer(
-                        issuer
-                )
-        );
+	@Bean
+	public SecretKey jwtSecretKey(@Value("${jwt.secret}") String secret) {
 
-        return decoder;
-    }
+		byte[] decodedKey = Base64.getDecoder().decode(secret);
+
+		return new SecretKeySpec(decodedKey, "HmacSHA256");
+	}
+
+	// Creates JwtEncoder.
+	// Responsibilities:
+	// - Generate JWT access tokens
+	// - Sign JWT using HS256 algorithm
+	// Used after successful login.
+
+	@Bean
+	public JwtEncoder jwtEncoder(SecretKey secretKey) {
+
+		return NimbusJwtEncoder.withSecretKey(secretKey).algorithm(MacAlgorithm.HS256).build();
+	}
+
+	// Creates JwtDecoder.
+	// Responsibilities:
+	// - Validate JWT signature
+	// - Validate token expiration
+	// - Validate issuer claim
+	// - Decode JWT payload
+	// Automatically used by Spring Security when
+	// processing Bearer tokens.
+
+	@Bean
+	public JwtDecoder jwtDecoder(SecretKey secretKey, @Value("${jwt.issuer}") String issuer) {
+
+		NimbusJwtDecoder decoder = NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS256).build();
+
+		decoder.setJwtValidator(JwtValidators.createDefaultWithIssuer(issuer));
+
+		return decoder;
+	}
 }
