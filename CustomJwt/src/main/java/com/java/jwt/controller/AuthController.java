@@ -2,6 +2,7 @@ package com.java.jwt.controller;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,8 +14,12 @@ import com.java.jwt.enity.RegisterRequest;
 import com.java.jwt.service.AuthService;
 import com.java.jwt.util.JwtUtil;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 @RequestMapping("api/auth")
+@SecurityRequirement(name = "BearerAuth")
+
 public class AuthController {
 
 	private final AuthenticationManager authenticationManager;
@@ -39,11 +44,16 @@ public class AuthController {
 
 		return new JwtResponse(token);
 	}
-	
-	@PostMapping("/register")
-	public String register(
-	        @RequestBody RegisterRequest request) {
 
-	    return authService.register(request);
+	@PostMapping("/register")
+	public String register(@RequestBody RegisterRequest request) {
+
+		return authService.register(request);
+	}
+
+	@GetMapping("/hello")
+	public String HelloWorld() {
+
+		return "Hello world : welcome ";
 	}
 }
