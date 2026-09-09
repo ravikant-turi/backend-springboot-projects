@@ -1,4 +1,4 @@
-package com.java.jwt.util.config;
+package com.java.jwt.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +26,31 @@ public class SecurityConfig {
 		this.jwtFilter = jwtFilter;
 	}
 
+//	@Bean
+//	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//
+//		return http
+//
+//				.csrf(csrf -> csrf.disable())
+//
+//				.authorizeHttpRequests(auth -> auth
+//
+//						.requestMatchers("/api/auth/register").permitAll().requestMatchers("/api/auth/login")
+//						.permitAll().requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+//						.requestMatchers("/api/test/**").permitAll().anyRequest().authenticated()
+//
+//				)
+//
+//				.sessionManagement(session -> session
+//
+//						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//				.addFilterBefore(
+//
+//						jwtFilter, UsernamePasswordAuthenticationFilter.class)
+//
+//				.build();
+//	}
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -35,10 +60,21 @@ public class SecurityConfig {
 
 				.authorizeHttpRequests(auth -> auth
 
-						.requestMatchers("/api/auth/register").permitAll().requestMatchers("/api/auth/login")
-						.permitAll().requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-						.requestMatchers("/api/test/**").permitAll().anyRequest().authenticated()
+				        .requestMatchers(
+				                "/api/auth/register",
+				                "/api/auth/login",
+				                "/swagger-ui/**",
+				                "/v3/api-docs/**"
+				        ).permitAll()
 
+				        .requestMatchers("/api/admin/**")
+				        .hasRole("ADMIN")
+
+				        .requestMatchers("/api/user/**")
+				        .hasAnyRole("USER", "ADMIN")
+
+				        .anyRequest()
+				        .authenticated()
 				)
 
 				.sessionManagement(session -> session
