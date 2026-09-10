@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import com.java.jwt.enity.RegisterRequest;
 import com.java.jwt.enity.Role;
 import com.java.jwt.enity.User;
-import com.java.jwt.util.repository.RoleRepository;
-import com.java.jwt.util.repository.UserRepository;
+import com.java.jwt.repository.RoleRepository;
+import com.java.jwt.repository.UserRepository;
 
 @Service
 public class AuthService {

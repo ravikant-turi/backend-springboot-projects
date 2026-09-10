@@ -7,7 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import com.java.jwt.enity.User;
-import com.java.jwt.util.repository.UserRepository;
+import com.java.jwt.repository.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

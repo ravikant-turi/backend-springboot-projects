@@ -1,21 +1,16 @@
 package com.java.jwt.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class JwtResponse {
 
-    private String token;
+	private String accessToken;
 
-    public JwtResponse() {
-    }
+	private String refreshToken;
 
-    public JwtResponse(String token) {
-        this.token = token;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 }

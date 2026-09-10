@@ -1,4 +1,4 @@
-package com.java.jwt.util.repository;
+package com.java.jwt.repository;
 
 import java.util.Optional;
 

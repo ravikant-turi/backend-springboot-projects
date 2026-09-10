@@ -10,8 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.java.jwt.dto.JwtResponse;
 import com.java.jwt.dto.LoginRequest;
+import com.java.jwt.dto.RefreshTokenRequest;
+import com.java.jwt.enity.RefreshToken;
 import com.java.jwt.enity.RegisterRequest;
+import com.java.jwt.enity.User;
+import com.java.jwt.repository.UserRepository;
 import com.java.jwt.service.AuthService;
+import com.java.jwt.service.RefreshTokenService;
 import com.java.jwt.util.JwtUtil;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -24,13 +29,17 @@ public class AuthController {
 
 	private final AuthenticationManager authenticationManager;
 	private final JwtUtil jwtUtil;
-
+	private final RefreshTokenService refreshTokenService;
+	private final UserRepository userRepository;
 	private final AuthService authService;
 
-	public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, AuthService authService) {
+	public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil,
+			RefreshTokenService refreshTokenService, UserRepository userRepository, AuthService authService) {
 
 		this.authenticationManager = authenticationManager;
 		this.jwtUtil = jwtUtil;
+		this.refreshTokenService = refreshTokenService;
+		this.userRepository = userRepository;
 		this.authService = authService;
 	}
 
@@ -40,11 +49,31 @@ public class AuthController {
 		authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
-		String token = jwtUtil.generateToken(request.getUsername());
 
-		return new JwtResponse(token);
+
+		String accessToken = jwtUtil.generateToken(request.getUsername());
+
+		User user = userRepository.findByUsername(request.getUsername())
+				.orElseThrow(() -> new RuntimeException("User not found"));
+
+		RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+
+		return new JwtResponse(accessToken, refreshToken.getToken());
+
 	}
 
+	@PostMapping("/refresh")
+	public JwtResponse refreshToken(
+	        @RequestBody RefreshTokenRequest request) {
+
+	    String accessToken =
+	            refreshTokenService.refreshAccessToken(
+	                    request.getRefreshToken());
+
+	    return new JwtResponse(
+	            accessToken,
+	            request.getRefreshToken());
+	}
 	@PostMapping("/register")
 	public String register(@RequestBody RegisterRequest request) {
 
