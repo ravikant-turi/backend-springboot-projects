@@ -1,5 +1,6 @@
 package com.java.jwt.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.java.jwt.dto.JwtResponse;
 import com.java.jwt.dto.LoginRequest;
+import com.java.jwt.dto.LogoutRequest;
 import com.java.jwt.dto.RefreshTokenRequest;
 import com.java.jwt.enity.RefreshToken;
 import com.java.jwt.enity.RegisterRequest;
@@ -41,6 +43,13 @@ public class AuthController {
 		this.refreshTokenService = refreshTokenService;
 		this.userRepository = userRepository;
 		this.authService = authService;
+	}
+	@PostMapping("/logout")
+	public ResponseEntity<String> logout(@RequestBody LogoutRequest request) {
+
+	    refreshTokenService.deleteByToken(request.getRefreshToken());
+
+	    return ResponseEntity.ok("Logged out successfully");
 	}
 
 	@PostMapping("/login")
