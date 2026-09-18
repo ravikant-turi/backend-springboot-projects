@@ -11,8 +11,10 @@ public class MainTest {
 
 		Payment paymentByUPI = factory.makePayment("UPI");
 		paymentByUPI.pay();
+
 		Payment paymentByCash = factory.makePayment("cAsh");
 		paymentByCash.pay();
+
 		Payment paymentByCard = factory.makePayment("CarD");
 		paymentByCard.pay();
 
