@@ -1,0 +1,17 @@
+package com.java.test;
+
+import com.java.main.FlyNoWay;
+import com.java.main.MuteQuack;
+
+public class DecoyDuck extends Duck {
+
+    public DecoyDuck() {
+        flyBehavior = new FlyNoWay();
+        quackBehavior = new MuteQuack();
+    }
+
+    @Override
+    public void display() {
+        System.out.println("I am a Decoy Duck");
+    }
+}
